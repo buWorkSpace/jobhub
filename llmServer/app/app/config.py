@@ -15,6 +15,6 @@ embedding = OpenAIEmbeddings()
 
 # Load data
 def load_document_data() -> list[str]:
-    data_path = Path('../../../jsonDataFolder/final_result_chunking.json')
+    data_path = Path('final_result_chunking.json')
     with open(data_path, 'r', encoding='utf-8') as f:
         return json.load(f)
