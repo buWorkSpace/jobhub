@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Enhanced Job Card */
+.enhanced-job-card {
+  @apply bg-white rounded-lg shadow-md p-4 mb-4 flex items-start space-x-4;
+  @apply transition-all duration-300 ease-in-out;
+  @apply transform hover:scale-105;
+}
+
+.job-card-logo {
+  @apply flex-shrink-0;
+}
+
+.company-logo {
+  @apply w-16 h-16 object-cover rounded-md;
+}
+
+.job-card-content {
+  @apply flex-grow;
+}
+
+.job-card-header {
+  @apply flex justify-between items-center mb-2;
+}
+
+.job-title {
+  @apply text-lg font-bold text-blue-700;
+}
+
+.job-deadline {
+  @apply text-red-500 font-semibold text-sm;
+}
+
+.job-details {
+  @apply text-gray-600 space-y-1 mb-3;
+}
+
+.job-company {
+  @apply font-medium;
+}
+
+.job-location {
+  @apply text-gray-500 text-sm;
+}
+
+.job-meta {
+  @apply flex space-x-2 text-xs text-gray-500;
+}
+
+.job-card-actions {
+  @apply border-t pt-2 mt-2;
+}
+
+.job-details-link {
+  @apply block text-center text-blue-600 hover:bg-blue-50 rounded-md p-2 transition-colors;
+}
+
+/* Loading Spinner */
+.loading-container {
+  @apply flex justify-center items-center min-h-screen;
+}
+
+.loading-spinner {
+  @apply w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin;
+}
+
+/* Page Container */
+.page-container {
+  @apply bg-gray-100 min-h-screen;
+}
+
+/* Main Header */
+.main-header {
+  @apply bg-white shadow-md;
+}
+
+.header-content {
+  @apply container mx-auto flex justify-between items-center p-4;
+}
+
+.logo {
+  @apply text-3xl font-bold text-blue-600;
+}
+
+.main-nav {
+  @apply flex space-x-6;
+}
+
+.nav-link {
+  @apply text-gray-700 hover:text-blue-600 transition-colors;
+}
+
+.auth-buttons {
+  @apply flex space-x-2;
+}
+
+.login-btn, .signup-btn {
+  @apply px-4 py-2 rounded-md transition-colors;
+}
+
+.login-btn {
+  @apply text-blue-600 hover:bg-blue-50;
+}
+
+.signup-btn {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+/* Main Content Grid */
+.main-content-grid {
+  @apply container mx-auto grid grid-cols-12 gap-6 pt-6 px-4;
+}
+
+.enhanced-left-sidebar {
+  @apply col-span-3 bg-white rounded-lg shadow-md p-6 space-y-6;
+}
+
+.main-content-col {
+  @apply col-span-9;
+}
+
+/* Filter Section */
+.filter-section {
+  @apply space-y-4;
+}
+
+.filter-title {
+  @apply flex items-center space-x-2 text-lg font-semibold text-gray-700;
+}
+
+.filter-group {
+  @apply space-y-2;
+}
+
+.filter-group label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.filter-group select {
+  @apply w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500;
+}
+
+/* Quick Menu Section */
+.quick-menu-section {
+  @apply bg-gray-50 rounded-md p-4 space-y-2;
+}
+
+.quick-menu-section h3 {
+  @apply text-base font-semibold text-gray-700 mb-2;
+}
+
+.quick-menu-item {
+  @apply flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer transition-colors;
+}
+
+/* Tabs */
+.tab-container {
+  @apply flex mb-4 bg-white rounded-lg shadow-sm;
+}
+
+.tab-item {
+  @apply flex-1 p-3 text-center border-b-2 border-transparent text-gray-600 hover:text-blue-600;
+}
+
+.tab-item-active {
+  @apply border-blue-500 text-blue-600 font-semibold;
+}
+
+/* Search Container */
+.search-container {
+  @apply relative mb-4;
+}
+
+.search-icon {
+  @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
+}
+
+.search-input {
+  @apply w-full p-3 pl-10 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Job Listings */
+.job-listings {
+  @apply space-y-4;
+}
+
+.no-jobs {
+  @apply text-center text-gray-500 p-4 bg-white rounded-md shadow-sm;
+}
+
+/* Pagination */
+.pagination {
+  @apply flex justify-center space-x-2 mt-6;
+}
+
+.page-button {
+  @apply px-4 py-2 bg-white border rounded hover:bg-gray-100 transition-colors;
+}
+
+.page-button.active {
+  @apply bg-blue-500 text-white;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main-content-grid {
+    @apply grid-cols-1;
+  }
+
+  .enhanced-left-sidebar {
+    @apply col-span-1 mb-4;
+  }
+
+  .main-content-col {
+    @apply col-span-1;
+  }
+}

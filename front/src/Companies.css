@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.companies-container {
+    @apply max-w-7xl mx-auto px-4 py-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen;
+}
+
+.companies-title {
+    @apply text-4xl font-extrabold mb-10 text-center text-transparent 
+           bg-clip-text bg-gradient-to-r from-blue-800 to-blue-500 
+           border-b-4 border-blue-300 pb-4 tracking-wide;
+}
+
+.search-filter-container {
+    @apply bg-white rounded-2xl shadow-xl p-6 mb-8 
+           ring-1 ring-gray-100 transform transition-all 
+           hover:shadow-2xl hover:scale-[1.01];
+}
+
+.search-container {
+    @apply max-w-2xl mx-auto mb-6;
+}
+
+.search-input {
+    @apply w-full px-5 py-4 rounded-xl border-2 border-blue-100 
+           bg-blue-50/30 text-gray-800 
+           focus:outline-none focus:ring-4 focus:ring-blue-300/50 
+           focus:border-blue-300 
+           transition-all duration-300 
+           placeholder-gray-500;
+}
+
+.filter-container {
+    @apply flex flex-wrap justify-center gap-4 items-center;
+}
+
+.filter-select {
+    @apply px-4 py-2.5 rounded-lg border border-gray-200 
+           bg-white text-gray-700 
+           focus:outline-none focus:ring-2 focus:ring-blue-400 
+           transition-colors duration-200 
+           hover:border-blue-300 
+           shadow-sm;
+}
+
+.companies-grid {
+    @apply space-y-6; /* 세로 간격 추가 */
+}
+
+.company-card {
+    @apply flex w-full bg-white rounded-2xl overflow-hidden 
+           shadow-lg hover:shadow-2xl 
+           transform transition-all duration-300 
+           hover:-translate-x-2 
+           border border-gray-100;
+}
+
+.company-card-logo {
+    @apply w-1/4 bg-gray-50 flex justify-center items-center p-8; /* 로고 섹션 너비와 패딩 조정 */
+}
+
+.company-logo {
+    @apply max-w-full max-h-full object-contain 
+           h-48 w-full; /* 이미지 크기 확대 */
+}
+
+.company-card-content {
+    @apply flex-grow p-6 space-y-4 flex flex-col justify-between;
+}
+.company-card-header {
+    @apply flex justify-between items-start mb-3;
+}
+
+.company-name {
+    @apply text-xl font-bold text-blue-900 
+           truncate max-w-[70%] 
+           group-hover:text-blue-700 
+           transition-colors;
+}
+
+.company-type {
+    @apply text-xs text-blue-800 bg-blue-100 
+           px-3 py-1 rounded-full 
+           font-medium tracking-tight;
+}
+
+.company-card-details {
+    @apply space-y-3 text-gray-600 text-sm;
+}
+
+.company-detail {
+    @apply flex items-center space-x-3;
+}
+
+.company-icon {
+    @apply w-5 h-5 flex-shrink-0 opacity-70;
+}
+
+.company-icon.blue { @apply text-blue-500; }
+.company-icon.green { @apply text-green-500; }
+.company-icon.purple { @apply text-purple-500; }
+.company-icon.yellow { @apply text-yellow-500; }
+
+.company-card-actions {
+    @apply p-4 bg-gray-50;
+}
+
+.company-details-link {
+    @apply w-full text-center text-white 
+           bg-gradient-to-r from-blue-600 to-blue-700 
+           hover:from-blue-700 hover:to-blue-800 
+           px-4 py-2.5 rounded-lg 
+           transition-all duration-300 
+           font-semibold tracking-wide 
+           shadow-md hover:shadow-lg;
+}
+
+.pagination {
+    @apply flex justify-center items-center space-x-2 mt-10;
+}
+
+.page-button {
+    @apply px-4 py-2 rounded-lg 
+           text-gray-600 bg-white 
+           border border-gray-200 
+           hover:bg-blue-50 hover:text-blue-600 
+           transition-colors duration-200 
+           shadow-sm;
+}
+
+.page-button.active {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 
+           text-white border-transparent 
+           shadow-md;
+}
+
+.total-pages {
+    @apply text-center text-gray-500 mt-4 text-sm;
+}
+
+.loading-container {
+    @apply flex justify-center items-center h-screen;
+}
+
+.loading-spinner {
+    @apply animate-spin rounded-full h-16 w-16 
+           border-t-4 border-b-4 border-blue-600 
+           bg-blue-100/30;
+}
+
+.no-companies {
+    @apply text-center text-gray-600 text-2xl mt-16 
+           bg-white p-12 rounded-2xl 
+           shadow-xl border border-gray-100;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 640px) {
+    .companies-grid {
+        @apply grid-cols-1 gap-6;
+    }
+
+    .filter-container {
+        @apply flex-col space-y-4;
+    }
+
+    .filter-select {
+        @apply w-full;
+    }
+}
