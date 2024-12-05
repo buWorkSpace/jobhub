@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.jobs-container {
+    @apply max-w-6xl mx-auto px-4 py-8 bg-gray-50 min-h-screen;
+}
+
+.jobs-title {
+    @apply text-4xl font-bold mb-8 text-center text-blue-900 border-b-4 border-blue-300 pb-4 tracking-wide;
+}
+
+.search-container {
+    @apply mb-6 max-w-xl mx-auto;
+}
+
+.search-input {
+    @apply w-full px-4 py-3 rounded-lg border border-blue-200 
+           focus:outline-none focus:ring-2 focus:ring-blue-400 
+           transition-all duration-300 text-gray-700;
+}
+
+.job-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.job-card {
+    @apply bg-white shadow-md rounded-xl p-6 hover:shadow-xl 
+           transition-all duration-300 border border-gray-200 
+           hover:border-blue-200 flex flex-col justify-between;
+}
+
+.job-card-content {
+    @apply flex-grow;
+}
+
+.job-card-header {
+    @apply flex justify-between items-center mb-3 pb-2 border-b border-gray-100;
+}
+
+.job-title {
+    @apply text-lg font-bold text-blue-900 truncate max-w-[calc(100%-80px)];
+}
+
+.job-deadline {
+    @apply text-xs text-white bg-blue-500 px-2 py-0.5 rounded-full;
+}
+
+.job-card-details {
+    @apply text-sm text-gray-700 space-y-3 mt-4;
+}
+
+.job-detail {
+    @apply flex items-center space-x-3;
+}
+
+.job-icon {
+    @apply w-5 h-5 flex-shrink-0;
+}
+
+.job-card-actions {
+    @apply mt-4 flex justify-center;
+}
+
+.job-details-link {
+    @apply w-full text-center text-white bg-blue-600 hover:bg-blue-700 
+           px-4 py-2 rounded-md transition-colors duration-300 
+           text-sm font-medium;
+}
+
+.pagination {
+    @apply flex justify-center items-center space-x-2 mt-8;
+}
+
+.page-button {
+    @apply px-4 py-2 border border-gray-300 rounded-md 
+           text-gray-700 hover:bg-blue-50 hover:text-blue-600 
+           transition-colors duration-300;
+}
+
+.page-button.active {
+    @apply bg-blue-600 text-white border-blue-600;
+}
+
+.loading-container {
+    @apply flex justify-center items-center h-screen;
+}
+
+.loading-spinner {
+    @apply animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600;
+}
+
+.no-jobs {
+    @apply text-center text-gray-600 text-2xl mt-16;
+}
+
+/* 반응형 디자인 개선 */
+@media (max-width: 640px) {
+    .job-grid {
+        @apply grid-cols-1;
+    }
+
+    .job-card-header {
+        @apply flex-col items-start space-y-2;
+    }
+
+    .job-details-link {
+        @apply w-full;
+    }
+}

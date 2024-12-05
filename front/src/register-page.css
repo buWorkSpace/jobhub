@@ -1,0 +1,98 @@
+/* register-page.css */
+.register-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Roboto', 'Noto Sans KR', sans-serif;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.register-form {
+    background-color: white;
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 350px; /* 가로 길이 줄임 */
+    animation: fade-in 0.5s ease-out;
+}
+
+.register-form h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #007bff;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"],
+.register-form input[type="date"] {
+    width: 100%; /* 가로 길이 100%로 유지 */
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    box-sizing: border-box; /* 패딩 포함해서 전체 너비 계산 */
+}
+
+.register-form .gender-selection {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem; /* 남성, 여성 사이 간격 조정 */
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.register-form .gender-selection label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.register-form .gender-selection input[type="radio"] {
+    margin-right: 0.35rem;
+    accent-color: #007bff;
+}
+
+.register-form .terms-checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.register-form .terms-checkbox input {
+    margin-right: 0.5rem;
+    accent-color: #007bff;
+}
+
+.register-form button {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.register-form .error-message {
+    color: #dc3545;
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: rgba(220, 53, 69, 0.1);
+    padding: 0.4rem;
+    border-radius: 4px;
+}

@@ -1,0 +1,67 @@
+/* login-page.css */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f1f7f9; /* 연한 파란색 톤의 배경색 */
+  font-family: 'Roboto', sans-serif; /* 청량한 느낌의 폰트 */
+}
+
+.login-form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #007bff; /* 청록색 계열의 로그인 폼 타이틀 색상 */
+}
+
+.login-form input {
+  width: 100%;
+  max-width: 350px; /* 입력 필드 최대 너비를 300px로 제한 */
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem; /* 버튼 아래 간격 추가 */
+}
+
+.login-form button:hover {
+  background-color: #0056b3; /* 버튼 호버 시 약간 더 진한 색상 */
+}
+
+.login-form p {
+  text-align: center;
+  margin-top: 0; /* margin-top 제거 */
+  color: #6c757d; /* 회색 계열의 회원가입 링크 색상 */
+}
+
+.login-form p a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-form p a:hover {
+  text-decoration: underline;
+}
