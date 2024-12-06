@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-import { Clock, MapPin, Briefcase, Calendar, Search, Filter } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Clock, MapPin, Briefcase, Filter } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import './MainPage.css';
 
 const JobCard = ({ job }) => {
@@ -38,9 +38,9 @@ const JobCard = ({ job }) => {
           </div>
         </div>
         <div className="job-card-actions">
-          <a 
-            href={job.jobUrl} 
-            target="_blank" 
+          <a
+            href={job.jobUrl}
+            target="_blank"
             rel="noopener noreferrer"
             className="job-details-link"
           >
@@ -53,6 +53,7 @@ const JobCard = ({ job }) => {
 };
 
 const MainPage = () => {
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,27 +64,23 @@ const MainPage = () => {
     employmentType: '',
     region: ''
   });
+  const [user, setUser] = useState(null); // 로그인 상태 확인용
   const jobsPerPage = 10;
 
-  const tabs = [
-    { id: 'total', name: '전체', count: 0 },
-    { id: 'recommend', name: '추천', count: 342 },
-    { id: 'new', name: '최신', count: 1254 }
-  ];
-
-  const quickMenus = [
-    { icon: <Clock />, name: "최근 본 공고" },
-    { icon: <MapPin />, name: "관심 지역" },
-    { icon: <Briefcase />, name: "환경설정" }
-  ];
-
   useEffect(() => {
-    axios.get('http://localhost:5000/api/crawl')
-      .then(response => {
+    // 로컬스토리지에서 로그인된 사용자 정보 확인
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (userData) {
+      setUser(userData);
+    }
+
+    axios
+      .get('http://localhost:5000/api/crawl')
+      .then((response) => {
         if (response.data.success) {
-          const jobsData = response.data.jobs.map(job => ({
+          const jobsData = response.data.jobs.map((job) => ({
             ...job,
-            companyLogo: `/logos/${job.company}.png` // 회사 로고 경로 추가
+            companyLogo: `/logos/${job.company}.png`
           }));
           setJobs(jobsData);
           setFilteredJobs(jobsData);
@@ -93,7 +90,7 @@ const MainPage = () => {
           setLoading(false);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('데이터 로딩 오류:', error);
         setLoading(false);
       });
@@ -103,25 +100,33 @@ const MainPage = () => {
     const query = e.target.value;
     setSearchQuery(query);
 
-    const filtered = jobs.filter((job) =>
-      job.title.toLowerCase().includes(query.toLowerCase()) ||
-      job.company.toLowerCase().includes(query.toLowerCase()) ||
-      job.location.toLowerCase().includes(query.toLowerCase())
+    const filtered = jobs.filter(
+      (job) =>
+        job.title.toLowerCase().includes(query.toLowerCase()) ||
+        job.company.toLowerCase().includes(query.toLowerCase()) ||
+        job.location.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredJobs(filtered);
   };
 
   const handleFilterChange = (filterType, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       [filterType]: value
     }));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('user'); // 로컬스토리지에서 사용자 정보 삭제
+    setUser(null); // 상태 초기화
+    navigate('/main'); // 로그인 페이지로 이동
+  };
+
   const filteredAndSearchedJobs = useMemo(() => {
-    return filteredJobs.filter(job => {
+    return filteredJobs.filter((job) => {
       const matchesCareer = !filters.career || job.experience === filters.career;
-      const matchesEmploymentType = !filters.employmentType || job.jobType === filters.employmentType;
+      const matchesEmploymentType =
+        !filters.employmentType || job.jobType === filters.employmentType;
       const matchesRegion = !filters.region || job.location.includes(filters.region);
       return matchesCareer && matchesEmploymentType && matchesRegion;
     });
@@ -163,12 +168,27 @@ const MainPage = () => {
             <Link to="/jobs" className="nav-link">채용</Link>
             <Link to="/companies" className="nav-link">기업</Link>
             <Link to="/resumes" className="nav-link">이력서</Link>
-            <Link to="/recommendations" className="nav-link">직군추천</Link>
+            <Link to="/ChatUI" className="nav-link">직군추천</Link>
             <Link to="/mypage" className="nav-link">마이페이지</Link>
           </nav>
           <div className="auth-buttons">
-            <button className="login-btn">로그인</button>
-            <button className="signup-btn">회원가입</button>
+            {user ? (
+              <>
+                <span>{user.username}님 접속</span>
+                <button className="logout-btn" onClick={handleLogout}>
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="login-btn" onClick={() => navigate('/login')}>
+                  로그인
+                </button>
+                <button className="signup-btn" onClick={() => navigate('/register')}>
+                  회원가입
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -179,10 +199,10 @@ const MainPage = () => {
             <h3 className="filter-title">
               <Filter size={20} /> 상세 검색
             </h3>
-            
+
             <div className="filter-group">
               <label>경력</label>
-              <select 
+              <select
                 onChange={(e) => handleFilterChange('career', e.target.value)}
                 value={filters.career}
               >
@@ -195,7 +215,7 @@ const MainPage = () => {
 
             <div className="filter-group">
               <label>고용 형태</label>
-              <select 
+              <select
                 onChange={(e) => handleFilterChange('employmentType', e.target.value)}
                 value={filters.employmentType}
               >
@@ -208,7 +228,7 @@ const MainPage = () => {
 
             <div className="filter-group">
               <label>지역</label>
-              <select 
+              <select
                 onChange={(e) => handleFilterChange('region', e.target.value)}
                 value={filters.region}
               >
@@ -216,53 +236,43 @@ const MainPage = () => {
                 <option value="서울">서울</option>
                 <option value="경기">경기</option>
                 <option value="인천">인천</option>
-                <option value="대전">대전</option>
-                <option value="부산">부산</option>
               </select>
             </div>
           </div>
-
-          <div className="quick-menu-section">
-            <h3>빠른 메뉴</h3>
-            {quickMenus.map((menu, index) => (
-              <div key={index} className="quick-menu-item">
-                {menu.icon}
-                <span className="ml-2">{menu.name}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="main-content-col">
-          <div className="tab-container">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`tab-item ${tab.id === 'total' ? 'tab-item-active' : ''}`}
-              >
-                {tab.name} ({tab.count || filteredAndSearchedJobs.length})
-              </button>
-            ))}
+        <div className="job-listings">
+          <div className="job-search">
+            <input
+              type="text"
+              placeholder="검색..."
+              value={searchQuery}
+              onChange={handleSearch}
+            />
           </div>
 
-          <div className="job-cards-container">
+          <div className="job-cards">
             {currentJobs.map((job, index) => (
               <JobCard key={index} job={job} />
             ))}
           </div>
 
-          <div className="pagination-container">
-            {prevPage && <button onClick={() => paginate(prevPage)}>&laquo; 이전</button>}
-            {pageNumbers.map((pageNumber) => (
+          <div className="pagination">
+            <button onClick={() => paginate(prevPage)} disabled={!prevPage}>
+              이전
+            </button>
+            {pageNumbers.map((number) => (
               <button
-                key={pageNumber}
-                onClick={() => paginate(pageNumber)}
-                className={pageNumber === currentPage ? 'active' : ''}
+                key={number}
+                onClick={() => paginate(number)}
+                className={number === currentPage ? 'active' : ''}
               >
-                {pageNumber}
+                {number}
               </button>
             ))}
-            {nextPage && <button onClick={() => paginate(nextPage)}>다음 &raquo;</button>}
+            <button onClick={() => paginate(nextPage)} disabled={!nextPage}>
+              다음
+            </button>
           </div>
         </div>
       </div>

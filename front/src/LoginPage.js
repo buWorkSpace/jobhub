@@ -11,6 +11,14 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // 로그인한 상태라면 메인 페이지로 리다이렉트
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      navigate('/main');
+    }
+  }, [navigate]);
+
   // 카카오 로그인 인증 코드 처리
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -27,6 +35,8 @@ const LoginPage = () => {
       const response = await axios.post('http://localhost:5000/api/kakao-login', { code });
       if (response.data.success) {
         alert('로그인 성공!');
+        // 카카오 로그인 후 사용자 정보 로컬스토리지에 저장
+        localStorage.setItem('user', JSON.stringify(response.data.user));
         navigate('/main'); // 메인 페이지로 이동
       } else {
         setError(response.data.message);
@@ -45,6 +55,8 @@ const LoginPage = () => {
       const response = await axios.post('http://localhost:5000/api/login', { email, password });
       if (response.data.success) {
         alert('로그인 성공!');
+        // 일반 로그인 후 사용자 정보 로컬스토리지에 저장
+        localStorage.setItem('user', JSON.stringify(response.data.user));
         navigate('/main');
       } else {
         setError(response.data.message);
