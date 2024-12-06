@@ -1,10 +1,11 @@
-from langchain_core.chat_history import BaseChatMessageHistory
 from pathlib import Path
 import re
-from typing import Callable, Union
+import ast
+from typing import Callable, Union, Dict, Any
 from fastapi import HTTPException
+from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_community.chat_message_histories import FileChatMessageHistory
-
+from config import jobSummaryList, job_titles
 
 def is_it_related_question(llm, user_input):
 	prompt = f"""
@@ -52,3 +53,33 @@ def create_session_factory(
         return FileChatMessageHistory(str(file_path))
 
     return get_chat_history
+
+
+
+def convert_to_int(data):
+	try:
+		if data.isdigit():
+			return int(data)
+		elif data.startswith("[") and data.endswith("]"):
+			return ast.literal_eval(data)
+		else:
+			raise ValueError("Unsupported input format")
+	except ValueError as e:
+		return str(e)
+
+
+def make_job_list(data):
+	job_list = [job_titles[i - 1] for i in data]
+	result = ", ".join(job_list)
+	return result
+
+
+
+def make_job_summary(data: Dict[str, Any]) -> str:
+    index = convert_to_int(data["index"])
+    # 여기 try except 구문은 테스트를 위해 추가한 것입니다. 실제로 필요한지는 확인해보세요.
+    try:
+        job_summary = "\n".join([jobSummaryList[i - 1] for i in index])
+        return job_summary
+    except ValueError as e:
+        return str(e)
