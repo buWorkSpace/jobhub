@@ -33,21 +33,27 @@ const CompanyCard = ({ company }) => {
           </div>
           <div className="company-detail">
             <Clock className="company-icon purple" />
-            <span>평균 연봉: {company.avgSalary} KRW</span>
+            <span>평균 연봉: {company.avgSalary} 만원</span>
           </div>
           <div className="company-detail">
             <Star className="company-icon yellow" />
-            <span>연봉 범위: {company.minSalary} - {company.maxSalary} KRW</span>
+            <span>연봉 범위: {company.minSalary} - {company.maxSalary} 만원</span>
           </div>
         </div>
       </div>
       <div className="company-card-actions">
-        <a 
-          href="#" 
-          className="company-details-link"
-        >
-          상세 정보
-        </a>
+        {company.companyUrl ? (
+          <a 
+            href={company.companyUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="company-details-link"
+          >
+            상세 정보
+          </a>
+        ) : (
+          <span className="no-url">URL 없음</span>
+        )}
       </div>
     </div>
   );

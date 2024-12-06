@@ -5,20 +5,27 @@ const bcrypt = require('bcrypt');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cheerio = require('cheerio');
+const jwt = require('jsonwebtoken');  // JWT 모듈 추가
+require('dotenv').config();
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// 카카오 REST API 키와 Redirect URI
-const KAKAO_REST_API_KEY = 'ec96ef10095fbc88dedef9f54e2ddc78'; // 카카오 REST API Key
-const KAKAO_REDIRECT_URI = 'http://localhost:3000/auth'; // 프론트엔드에서 설정한 리디렉트 URI
+// .env 파일에서 환경 변수 불러오기
+const dbHost = process.env.DB_HOST;
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
+const dbName = process.env.DB_NAME;
+const jwtSecretKey = process.env.JWT_SECRET_KEY;
+const kakaoRestApiKey = process.env.KAKAO_REST_API_KEY;
+const kakaoRedirectUri = process.env.KAKAO_REDIRECT_URI;
 
 // MySQL 연결 설정
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // MySQL 사용자 이름
-  password: 'ekzm9197!', // MySQL 비밀번호
-  database: 'UserDB', // 사용할 데이터베이스 이름
+  host: dbHost,  // 환경변수로 DB 호스트 설정
+  user: dbUser,  // 환경변수로 DB 사용자 이름 설정
+  password: dbPassword,  // 환경변수로 DB 비밀번호 설정
+  database: dbName,  // 환경변수로 DB 이름 설정
 });
 
 // MySQL 연결 테스트
@@ -33,6 +40,24 @@ db.connect((err) => {
 // 미들웨어 설정
 app.use(cors());
 app.use(bodyParser.json());
+
+// JWT 인증 미들웨어
+const authenticateJWT = (req, res, next) => {
+  const token = req.header('Authorization')?.split(' ')[1];  // Authorization 헤더에서 Bearer 토큰 추출
+
+  if (!token) {
+    return res.status(403).json({ message: '토큰이 제공되지 않았습니다.' });
+  }
+
+  jwt.verify(token, jwtSecretKey, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: '토큰이 유효하지 않습니다.' });
+    }
+
+    req.user = user;  // 유저 정보 저장
+    next();
+  });
+};
 
 // 회원가입 API
 app.post('/api/register', async (req, res) => {
@@ -123,8 +148,8 @@ app.get('/auth', async (req, res) => {
       {
         params: {
           grant_type: 'authorization_code',
-          client_id: KAKAO_REST_API_KEY,
-          redirect_uri: KAKAO_REDIRECT_URI,
+          client_id: kakaoRestApiKey,
+          redirect_uri: kakaoRedirectUri,
           code: code,
         },
       }
@@ -222,39 +247,60 @@ app.get('/api/crawl', async (req, res) => {
   }
 });
 
+
 // 연봉 데이터 크롤링 API
 app.get('/api/salary-crawl', async (req, res) => {
-  const allpage = req.query.allpage || 1; // 기본 페이지 수 1
+  const allpage = req.query.allpage || 1; // 기본 페이지 수: 1
 
   try {
     const allSalaries = [];
+    const baseURL = 'https://www.saramin.co.kr';
 
     for (let page = 1; page <= allpage; page++) {
-      const url = `https://www.saramin.co.kr/zf_user/salaries/industry/it-list?page=${page}`;
+      const url = `${baseURL}/zf_user/salaries/industry/it-list?page=${page}`;
+
       const response = await axios.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+
+      if (response.status !== 200) {
+        console.warn(`${page}페이지를 불러오는 데 실패했습니다.`);
+        continue;
+      }
 
       const $ = cheerio.load(response.data);
       const companies = $('li'); // 기업 정보 포함 태그 선택
 
-      companies.each((index, company) => {
+      companies.each((_, company) => {
         try {
           const today = new Date().toISOString().split('T')[0]; // 현재 날짜 (YYYY-MM-DD)
-          const companyName = $(company).find('strong.tit_company a.link_tit').text().trim() || '기업명 없음';
-          const logoUrl = $(company).find('span.inner_logo img').attr('src') || '로고 없음';
-          const companyType = $(company).find('dl.info_item dt:contains("기업형태") + dd').text().trim() || '정보 없음';
-          const industry = $(company).find('dl.info_item dt:contains("산업(업종)") + dd').text().trim() || '정보 없음';
-          const avgSalary = parseFloat($(company).find('span.wrap_graph.color01 .txt_avg').text().trim().replace(/[^\d.-]/g, '')) || 0; // 숫자만 추출
-          const minSalary = parseFloat($(company).find('span.wrap_graph.color02 .txt_g').text().trim().replace(/[^\d.-]/g, '')) || 0; // 숫자만 추출
-          const maxSalary = parseFloat($(company).find('span.wrap_graph.color03 .txt_g').text().trim().replace(/[^\d.-]/g, '')) || 0; // 숫자만 추출
+
+          // 기업명 추출
+          const companyNameTag = $(company).find('strong.tit_company a.link_tit');
+          const companyName = companyNameTag.text().trim() || '기업명 없음';
 
           if (companyName === '기업명 없음') return; // 기업명이 없는 경우 건너뛰기
 
-          // MySQL에 데이터 저장
+          // 기업 URL 추출 (상대 경로 -> 절대 경로 변환)
+          const companyUrl = companyNameTag.attr('href') ? new URL(companyNameTag.attr('href'), baseURL).href : 'URL 없음';
+
+          // 로고 URL 추출
+          const logoUrl = $(company).find('span.inner_logo img').attr('src') || '로고 없음';
+
+          // 기업 형태 추출
+          const companyType = $(company).find('dl.info_item dt:contains("기업형태") + dd').text().trim() || '정보 없음';
+
+          // 산업(업종) 추출
+          const industry = $(company).find('dl.info_item dt:contains("산업(업종)") + dd').text().trim() || '정보 없음';
+
+          // 연봉 정보 추출 (평균, 최저, 최고)
+          const avgSalary = parseFloat($(company).find('span.wrap_graph.color01 .txt_avg').text().replace(/[^\d.-]/g, '')) || 0;
+          const minSalary = parseFloat($(company).find('span.wrap_graph.color02 .txt_g').text().replace(/[^\d.-]/g, '')) || 0;
+          const maxSalary = parseFloat($(company).find('span.wrap_graph.color03 .txt_g').text().replace(/[^\d.-]/g, '')) || 0;
+
+          // 크롤링된 데이터 저장
           const insertQuery = `
             INSERT INTO companies (date, company_name, logo_url, company_type, industry, avg_salary, min_salary, max_salary)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
           `;
-
           db.query(
             insertQuery,
             [today, companyName, logoUrl, companyType, industry, avgSalary, minSalary, maxSalary],
@@ -265,10 +311,11 @@ app.get('/api/salary-crawl', async (req, res) => {
             }
           );
 
-          // 크롤링된 데이터 배열에 추가
+          // 결과 배열에 추가
           allSalaries.push({
             date: today,
             companyName,
+            companyUrl,
             logoUrl,
             companyType,
             industry,
@@ -277,7 +324,7 @@ app.get('/api/salary-crawl', async (req, res) => {
             maxSalary,
           });
         } catch (e) {
-          console.error('크롤링 중 오류 발생:', e);
+          console.error('기업 데이터 처리 중 오류 발생:', e);
         }
       });
     }

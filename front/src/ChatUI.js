@@ -13,7 +13,8 @@ const ChatUI = () => {
 
     const sendMessage = async () => {
         const trimmedInput = input.trim();
-
+        const UserInput=input;
+        
         if (!trimmedInput) return;
 
         if (trimmedInput.length > 1000) {
@@ -21,13 +22,14 @@ const ChatUI = () => {
             return;
         }
 
-        const userMessage = { sender: "user", text: input };
+        const userMessage = { sender: "user", text: UserInput };
         setMessages((prev) => [...prev, userMessage]);
+        setInput("");
 
         try {
             // const response = await fetch("http://localhost:8000/llm/invoke", {
             const response = await fetch(
-                "https://0c0f-118-42-150-97.ngrok-free.app/llm/invoke",
+                "https://giving-sunny-earwig.ngrok-free.app/llm/invoke",
                 {
                     method: "POST",
                     headers: {
@@ -40,6 +42,7 @@ const ChatUI = () => {
                     }),
                 }
             );
+            
 
             const data = await response.json();
             const serverMessage = {
@@ -57,7 +60,7 @@ const ChatUI = () => {
             setMessages((prev) => [...prev, errorMessage]);
         }
 
-        setInput("");
+        
     };
 
     const handleKeyPress = (e) => {
